@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Snake Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 20px;
+      background: black;
+      color: white;
+      font-family: monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1, canvas#logoCanvas {
+      margin: 0;
+      padding: 0;
+    }
+
+    #logoCanvas {
+      display: block;
+      margin-bottom: 10px;
+      max-width: 100%;
+      height: auto;
+    }
+
+    #scoreBoard {
+      font-size: 18px;
+      margin-top: 5px;
+      margin-bottom: 10px;
+      text-align: center;
+      color: deepskyblue;
+    }
+
+    #playerNameInput {
+      padding: 5px;
+      font-size: 16px;
+      width: 200px;
+      border-radius: 5px;
+      border: 1px solid lime;
+      background: black;
+      color: lime;
+      outline: none;
+      margin-bottom: 10px;
+    }
+
+    .btn {
+      padding: 8px 15px;
+      font-size: 14px;
+      background: black;
+      border: 2px solid lime;
+      color: lime;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+
+    .btn:hover {
+      background-color: lime;
+      color: black;
+    }
+
+    #mainContent {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 15px;
+      width: 100%;
+    }
+
+    #leftControls {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    canvas#gameCanvas {
+      background-color: black;
+      border: 2px solid lime;
+      border-radius: 10px;
+      max-width: 100%;
+      height: auto;
+    }
+
+    #historyList {
+      width: 200px;
+      border: 2px solid lime;
+      padding: 10px;
+      border-radius: 10px;
+      background: #111;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    #historyList h3 {
+      color: deepskyblue;
+      margin-top: 0;
+    }
+
+    footer {
+      margin-top: 30px;
+      text-align: center;
+      color: lime;
+      font-size: 14px;
+      opacity: 0.8;
+    }
+
+    @media (max-width: 600px) {
+      #playerNameInput {
+        width: 100%;
+        max-width: 250px;
+      }
+
+      #historyList {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Glowing Logo Canvas -->
+  <canvas id="logoCanvas" width="600" height="100"></canvas>
+
+  <!-- Scoreboard -->
+  <div id="scoreBoard">Player: ? | Score: 0 | High: 0</div>
+
+  <div id="mainContent">
+    <!-- Controls -->
+    <div id="leftControls">
+      <input id="playerNameInput" placeholder="Enter your name" />
+      <button class="btn" onclick="startNewGame()">Start Game</button>
+      <button class="btn" onclick="restartGame()">Restart</button>
+      <button class="btn" onclick="toggleHistory()" id="toggleHistoryBtn">Show History</button>
+    </div>
+
+    <!-- Game Canvas -->
+    <canvas id="gameCanvas" width="600" height="400"></canvas>
+
+    <!-- History -->
+    <div id="historyList" style="display: none;">
+      <h3>History</h3>
+      <ul id="historyItems"></ul>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+
+  <!-- Logo Script -->
+  <script>
+    const logoCanvas = document.getElementById("logoCanvas");
+    const logoCtx = logoCanvas.getContext("2d");
+
+    logoCtx.clearRect(0, 0, logoCanvas.width, logoCanvas.height);
+    logoCtx.font = "bold 80px Arial";
+    logoCtx.textAlign = "center";
+    logoCtx.textBaseline = "middle";
+    logoCtx.lineJoin = "round";
+
+    // Outer stroke (glow)
+    logoCtx.strokeStyle = "lime";
+    logoCtx.lineWidth = 8;
+    logoCtx.shadowColor = "lime";
+    logoCtx.shadowBlur = 20;
+    logoCtx.strokeText("Snake", logoCanvas.width / 2, logoCanvas.height / 2);
+
+    // Inner fill
+    logoCtx.shadowBlur = 0;
+    logoCtx.fillStyle = "black";
+    logoCtx.fillText("Snake", logoCanvas.width / 2, logoCanvas.height / 2);
+  </script>
+
+  <!-- Footer -->
+  <footer>
+    Made with 💚 by Jay Patel | © 2025 Snake Game
+  </footer>
+
+  <!-- Responsive Canvas Script -->
+  <script>
+    function resizeCanvas() {
+      const canvas = document.getElementById("gameCanvas");
+      const maxWidth = Math.min(window.innerWidth - 40, 600);
+      const scale = maxWidth / 600;
+      canvas.style.width = maxWidth + "px";
+      canvas.style.height = 400 * scale + "px";
+    }
+
+    window.addEventListener("resize", resizeCanvas);
+    document.addEventListener("DOMContentLoaded", resizeCanvas);
+  </script>
+</body>
+</html>
