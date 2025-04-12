@@ -1,4 +1,4 @@
-// GAME.JS - Updated to only save higher scores for same player
+// Game.js - Updated to support touch controls for mobile users
 
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
@@ -18,6 +18,7 @@ let playerName = "";
 let gameOver = false;
 let highScore = 0;
 let historyData = JSON.parse(localStorage.getItem("snakeHistory")) || {};
+let touchStart = { x: 0, y: 0 };
 
 function initGame() {
   snake = [{ x: 300, y: 200 }];
@@ -157,12 +158,35 @@ function gameLoop() {
   requestAnimationFrame(gameLoop);
 }
 
+function onSwipeTouch(e) {
+  const touchEnd = e.changedTouches[0];
+  const deltaX = touchEnd.pageX - touchStart.x;
+  const deltaY = touchEnd.pageY - touchStart.y;
+
+  if (Math.abs(deltaX) > Math.abs(deltaY)) {
+    if (deltaX > 0 && direction.x !== -1) direction = { x: 1, y: 0 };  // Right swipe
+    else if (deltaX < 0 && direction.x !== 1) direction = { x: -1, y: 0 };  // Left swipe
+  } else {
+    if (deltaY > 0 && direction.y !== -1) direction = { x: 0, y: 1 };  // Down swipe
+    else if (deltaY < 0 && direction.y !== 1) direction = { x: 0, y: -1 };  // Up swipe
+  }
+}
+
+function onTouchStart(e) {
+  touchStart.x = e.changedTouches[0].pageX;
+  touchStart.y = e.changedTouches[0].pageY;
+}
+
 window.addEventListener("keydown", (e) => {
   if (e.key === "ArrowUp" && direction.y === 0) direction = { x: 0, y: -1 };
   else if (e.key === "ArrowDown" && direction.y === 0) direction = { x: 0, y: 1 };
   else if (e.key === "ArrowLeft" && direction.x === 0) direction = { x: -1, y: 0 };
   else if (e.key === "ArrowRight" && direction.x === 0) direction = { x: 1, y: 0 };
 });
+
+// Add touch event listeners
+canvas.addEventListener("touchstart", onTouchStart, false);
+canvas.addEventListener("touchmove", onSwipeTouch, false);
 
 // Initial UI Setup
 document.addEventListener("DOMContentLoaded", () => {
